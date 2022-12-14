@@ -11,13 +11,11 @@ import {BehaviorSubject, filter, Observable, ReplaySubject, Subject, switchMap, 
 export class SubscriptionComponentComponent implements OnInit, OnDestroy {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
-  private selectedModeSubject = new ReplaySubject<CarModel>();
 
-  private static NUMBER_OF_SUBSCRIPTIONS = 0;
+  private selectedModeSubject = new ReplaySubject<CarModel>();
+  private marketRatesSubject = new ReplaySubject<MarketRate>();
 
   Market = Market;
-
-  private _marketRates!: MarketRate;
 
   @Input() set model(value: CarModel) {
     this.selectedModeSubject.next(value);
@@ -33,19 +31,15 @@ export class SubscriptionComponentComponent implements OnInit, OnDestroy {
       .pipe(
         takeUntil(this.unsubscribe$),
         switchMap(model => this.fetchMarketRates(model)),
-      ).subscribe(data => this._marketRates = data);
+      ).subscribe(data => this.marketRatesSubject.next(data));
   }
 
   get selectedModel(): Observable<CarModel> {
     return this.selectedModeSubject.asObservable();
   }
 
-  get marketRates(): MarketRate {
-    return this._marketRates;
-  }
-
-  get isDataPresent(): boolean {
-    return !!this.marketRates;
+  get marketRates(): Observable<MarketRate> {
+    return this.marketRatesSubject.asObservable();
   }
 
   fetchMarketRates(carModel: CarModel): Observable<MarketRate> {

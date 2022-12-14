@@ -1,6 +1,6 @@
 <h3>Selected model: {{selectedModel | async}}</h3>
-<div *ngIf="isDataPresent">
-  <div>WORLD (sum): {{marketRates[Market.WORLD]}}</div>
-  <div>China: {{marketRates[Market.CHINA]}}</div>
-  <div>Germany: {{marketRates[Market.GERMANY]}}</div>
+<div *ngIf="marketRates | async as rates">
+  <div>WORLD (sum): {{rates[Market.WORLD]}}</div>
+  <div>China: {{rates[Market.CHINA]}}</div>
+  <div>Germany: {{rates[Market.GERMANY]}}</div>
 </div>
