@@ -10,6 +10,8 @@ import {Observable} from 'rxjs';
 })
 export class SubscriptionComponentComponent implements OnInit {
 
+  private static NUMBER_OF_SUBSCRIPTIONS = 0;
+
   Market = Market;
 
   private _selectedModel!: CarModel;
@@ -17,7 +19,14 @@ export class SubscriptionComponentComponent implements OnInit {
 
   @Input() set model(value: CarModel) {
     this._selectedModel = value;
-    this.fetchMarketRates().subscribe(rates => this._marketRates = rates);
+
+    SubscriptionComponentComponent.NUMBER_OF_SUBSCRIPTIONS++;
+    const currentSubscription = SubscriptionComponentComponent.NUMBER_OF_SUBSCRIPTIONS;
+
+    this.fetchMarketRates().subscribe(rates => {
+      this._marketRates = rates;
+      console.log('fetchMarketRates callback ', currentSubscription);
+    });
   }
 
   constructor(private salesDataStore: SalesDataStoreService) {
