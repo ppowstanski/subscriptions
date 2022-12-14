@@ -17,7 +17,6 @@ export class SubscriptionComponentComponent implements OnInit, OnDestroy {
 
   Market = Market;
 
-  private _selectedModel!: CarModel;
   private _marketRates!: MarketRate;
 
   @Input() set model(value: CarModel) {
@@ -37,8 +36,8 @@ export class SubscriptionComponentComponent implements OnInit, OnDestroy {
       ).subscribe(data => this._marketRates = data);
   }
 
-  get selectedModel(): CarModel {
-    return this._selectedModel;
+  get selectedModel(): Observable<CarModel> {
+    return this.selectedModeSubject.asObservable();
   }
 
   get marketRates(): MarketRate {

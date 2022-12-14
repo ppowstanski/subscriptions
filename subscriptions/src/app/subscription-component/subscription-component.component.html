@@ -1,4 +1,4 @@
-<h3>Selected model: {{selectedModel}}</h3>
+<h3>Selected model: {{selectedModel | async}}</h3>
 <div *ngIf="isDataPresent">
   <div>WORLD (sum): {{marketRates[Market.WORLD]}}</div>
   <div>China: {{marketRates[Market.CHINA]}}</div>
