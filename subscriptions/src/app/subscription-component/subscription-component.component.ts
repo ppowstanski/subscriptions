@@ -1,7 +1,7 @@
 import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {CarModel, Market, MarketRate} from '../models';
 import {SalesDataStoreService} from '../sales-data.store';
-import {Observable, pipe, Subject, Subscription, takeUntil} from 'rxjs';
+import {BehaviorSubject, filter, Observable, ReplaySubject, Subject, switchMap, takeUntil, tap} from 'rxjs';
 
 @Component({
   selector: 'app-subscription-component',
@@ -11,6 +11,7 @@ import {Observable, pipe, Subject, Subscription, takeUntil} from 'rxjs';
 export class SubscriptionComponentComponent implements OnInit, OnDestroy {
 
   private unsubscribe$: Subject<void> = new Subject<void>();
+  private selectedModeSubject = new ReplaySubject<CarModel>();
 
   private static NUMBER_OF_SUBSCRIPTIONS = 0;
 
@@ -20,26 +21,20 @@ export class SubscriptionComponentComponent implements OnInit, OnDestroy {
   private _marketRates!: MarketRate;
 
   @Input() set model(value: CarModel) {
-    this.unsubscribe$.next();
-    this.unsubscribe$ = new Subject<void>();
-
-    this._selectedModel = value;
-
-    SubscriptionComponentComponent.NUMBER_OF_SUBSCRIPTIONS++;
-    const currentSubscription = SubscriptionComponentComponent.NUMBER_OF_SUBSCRIPTIONS;
-
-    this.fetchMarketRates()
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe(rates => {
-      this._marketRates = rates;
-      console.log('fetchMarketRates callback ', currentSubscription);
-    });
+    this.selectedModeSubject.next(value);
   }
 
   constructor(private salesDataStore: SalesDataStoreService) {
   }
 
   ngOnInit(): void {
+    this
+      .selectedModeSubject
+      .asObservable()
+      .pipe(
+        takeUntil(this.unsubscribe$),
+        switchMap(model => this.fetchMarketRates(model)),
+      ).subscribe(data => this._marketRates = data);
   }
 
   get selectedModel(): CarModel {
@@ -50,12 +45,17 @@ export class SubscriptionComponentComponent implements OnInit, OnDestroy {
     return this._marketRates;
   }
 
-  fetchMarketRates(): Observable<MarketRate>{
-    return this.salesDataStore.salesData(this.selectedModel);
+  get isDataPresent(): boolean {
+    return !!this.marketRates;
+  }
+
+  fetchMarketRates(carModel: CarModel): Observable<MarketRate> {
+    return this.salesDataStore.salesData(carModel);
   }
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }
 

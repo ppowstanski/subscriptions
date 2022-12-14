@@ -326,6 +326,7 @@
 </div>
 
 <div class="content" role="main">
+  <button (click)="turnOnOfDataPresentation()">Turn on/off data presentation</button>
   <select name="cars" id="cars" style="margin: 3em" #car [(ngModel)]="selectedCarModel">
     <option [value]="CarModel.A1">Audi {{CarModel.A1}}</option>
     <option [value]="CarModel.A6">Audi {{CarModel.A6}}</option>

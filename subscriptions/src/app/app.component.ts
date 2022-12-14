@@ -6,7 +6,7 @@ import {CarModel} from './models';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponen {
+export class AppComponent {
   title = 'subscriptions';
 
   CarModel = CarModel;
@@ -15,5 +15,9 @@ export class AppComponen {
   isDataDisplaying = true;
 
   constructor() {
+  }
+
+  turnOnOfDataPresentation() {
+    this.isDataDisplaying = !this.isDataDisplaying;
   }
 }
