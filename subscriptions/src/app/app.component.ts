@@ -6,19 +6,14 @@ import {CarModel} from './models';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
+export class AppComponen {
   title = 'subscriptions';
 
   CarModel = CarModel;
   selectedCarModel = CarModel.A8
 
+  isDataDisplaying = true;
+
   constructor() {
-  }
-
-  ngOnInit(): void {
-  }
-
-  onCarModelChange($event: string) {
-    console.log($event);
   }
 }

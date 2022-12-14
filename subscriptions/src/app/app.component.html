@@ -326,13 +326,12 @@
 </div>
 
 <div class="content" role="main">
-
   <select name="cars" id="cars" style="margin: 3em" #car [(ngModel)]="selectedCarModel">
     <option [value]="CarModel.A1">Audi {{CarModel.A1}}</option>
     <option [value]="CarModel.A6">Audi {{CarModel.A6}}</option>
     <option [value]="CarModel.A8">Audi {{CarModel.A8}}</option>
   </select>
-  <app-subscription-component [model]="selectedCarModel"></app-subscription-component>
+  <app-subscription-component *ngIf="isDataDisplaying" [model]="selectedCarModel"></app-subscription-component>
 
 </div>
 
